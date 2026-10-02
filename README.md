@@ -153,4 +153,4 @@ Aleux Remote Support is provided "as is", without warranty of any kind.
 Users are responsible for ensuring that remote access is authorized and complies with applicable laws, regulations and organizational policies.
 
 ## Author
-Created by [@Janux-xx](https://github.com)
+Created by [@Janux-xx](https://github.com/janux-xx/)
