@@ -49,7 +49,7 @@ Clone the Repository
 Clone the repository and enter the project directory:
 
 git clone <REPOSITORY_URL>
-cd AleuxRemote
+cd SoporteRemoto
 Install Frontend Dependencies
 
 The frontend project is located under:
@@ -72,6 +72,7 @@ cd src-tauri
 cargo tauri dev
 
 The frontend development server uses port 1420.
+Open it in edge !!
 
 Verify the Rust Code
 
