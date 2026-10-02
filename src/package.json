@@ -1,0 +1,18 @@
+{
+  "name": "src",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 1420",
+    "build": "vite build",
+    "build:support": "vite build --config vite.support.config.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.12.0"
+  }
+}
