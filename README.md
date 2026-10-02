@@ -43,12 +43,13 @@ Aleux Remote Support uses a signaling server to establish a WebRTC peer-to-peer 
            \                 /
             \   WebRTC P2P  /
              +-------------+
+```
 
 A TURN server can be used when a direct peer-to-peer connection cannot be established.
 
 The signaling server coordinates the session but does not provide remote desktop control.
 
-Authorization
+## Authorization
 
 Remote access requires explicit authorization from the customer.
 
@@ -56,36 +57,36 @@ The customer must accept the support request before remote control becomes avail
 
 The software is designed for authorized technical support and should not be used to access computers without the owner's permission.
 
-Components
-Windows applications
+## Components
 
-The project contains:
+# Windows applications
 
-Customer application
+The project contains:<br>
+Customer application<br>
 Technician application
 
 Both applications are built using Tauri and Rust.
 
-Signaling server
+## Signaling server
 
-The signaling server is implemented in Rust using Axum and WebSockets.
-
+The signaling server is implemented in Rust using Axum and WebSockets.<br>
 Its responsibilities include:
 
-Creating support sessions
-Joining sessions
-Requesting access
-Accepting or rejecting access
-Relaying WebRTC signaling information
-Managing session state
+Creating support sessions<br>
+Joining sessions<br>
+Requesting access<br>
+Accepting or rejecting access<br>
+Relaying WebRTC signaling information<br>
+Managing session state<br>
 
-TURN server
+## TURN server
 
 TURN connectivity is provided by
 coturn. https://github.com/coturn/coturn
 
+
 Example configuration:
-------------------------------------
+```text
 listening-port=3478
 listening-ip=YOUR_SERVER_IP
 external-ip=YOUR_SERVER_IP
@@ -101,46 +102,55 @@ realm=YOUR_SERVER_URL
 
 log-file=/var/log/coturn/turnserver.log
 simple-log
-------------------------------------
+```
 
 
-Building > Requirements:
-Windows
-Rust
-Cargo
-Node.js
-npm
-Visual Studio Build Tools
+## Building 
+### Requirements:
+> Windows<br>
+Rust<br>
+Cargo<br>
+Node.js<br>
+npm<br>
+Visual Studio Build Tools<br>
 
-Build the Windows application:
-cd src-tauri
+### Build the Windows application:
+> cd src-tauri<br>
 cargo tauri build
 
-The generated installers can be found under:
-src-tauri/target/release/bundle/
+#### The generated installers can be found under:
+> src-tauri/target/release/bundle/
 
-Development > Start the development application with:
-cd src-tauri
+## Development 
+Start the development application with:
+> cd src-tauri<br>
 cargo tauri dev
 
 The frontend development server runs on port 1420.
 
-Open Source > Aleux Remote Support is free and open-source software.
+## Open Source
+Aleux Remote Support is free and open-source software.
+### Contributions, reviews, security reports and improvements are welcome.
 
-Contributions, reviews, security reports and improvements are welcome.
-
-Security > Security vulnerabilities should not be reported publicly.
+## Security
+Security vulnerabilities should not be reported publicly.
 
 Please see SECURITY.md for information about reporting security issues.
 
-Contributing > Contributions are welcome.
+## Contributing 
+Contributions are welcome.
 
 Please read CONTRIBUTING.md before submitting changes.
 
-License > Aleux Remote Support is released under the MIT License.
+## License 
+Aleux Remote Support is released under the MIT License.
 
 See LICENSE for the complete license text.
 
-Disclaimer > Aleux Remote Support is provided "as is", without warranty of any kind.
+## Disclaimer
+Aleux Remote Support is provided "as is", without warranty of any kind.
 
 Users are responsible for ensuring that remote access is authorized and complies with applicable laws, regulations and organizational policies.
+
+## Author
+Created by @Janux-xx
