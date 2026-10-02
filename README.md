@@ -13,16 +13,15 @@ More info here: https://github.com/coturn/coturn
 
  /etc/coturn/turnserver.conf
 
-listening-port=3478
-listening-ip=you-server-ip
-external-ip=you-server-ip
-min-port=49152
-max-port=49200
-fingerprint
+listening-port=3478<br>
+listening-ip=you-server-ip<br>
+external-ip=you-server-ip<br>
+min-port=49152<br>
+max-port=49200<br>
+fingerprint<br>
 lt-cred-mech
-userdb=/var/lib/coturn/turndb
-realm=soporteremoto.mierp.u
-log-file=/var/log/coturn/turnserver.log
-simple-log
-no-cli
-
+userdb=/var/lib/coturn/turndb<br>
+realm=soporteremoto.mierp.u<br>
+log-file=/var/log/coturn/turnserver.log<br>
+simple-log<br>
+no-cli<br>
