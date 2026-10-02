@@ -135,17 +135,17 @@ Aleux Remote Support is free and open-source software.
 ## Security
 Security vulnerabilities should not be reported publicly.
 
-Please see SECURITY.md for information about reporting security issues.
+Please see [SECURITY.md](SECURITY.md) for information about reporting security issues.
 
 ## Contributing 
 Contributions are welcome.
 
-Please read CONTRIBUTING.md before submitting changes.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes.
 
 ## License 
 Aleux Remote Support is released under the MIT License.
 
-See LICENSE for the complete license text.
+See [LICENSE](LICENSE) for the complete license text.
 
 ## Disclaimer
 Aleux Remote Support is provided "as is", without warranty of any kind.
@@ -153,4 +153,4 @@ Aleux Remote Support is provided "as is", without warranty of any kind.
 Users are responsible for ensuring that remote access is authorized and complies with applicable laws, regulations and organizational policies.
 
 ## Author
-Created by @Janux-xx
+Created by [@Janux-xx](https://github.com)
