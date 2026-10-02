@@ -21,7 +21,7 @@ max-port=49200<br>
 fingerprint<br>
 lt-cred-mech
 userdb=/var/lib/coturn/turndb<br>
-realm=soporteremoto.mierp.u<br>
+realm=YOUR-SERVER-URL<br>
 log-file=/var/log/coturn/turnserver.log<br>
 simple-log<br>
 no-cli<br>
