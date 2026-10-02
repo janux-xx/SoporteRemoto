@@ -46,24 +46,20 @@ AleuxRemote/
 
 To start the application in development mode:
 
-````text
 cd src-tauri
 cargo tauri dev
 
 ## Building
 
 To verify Rust project:
-````text
 cd src-tauri
 cargo check
 
 To build the frontend:
-````text
 cd src
 npm run build
 
 To create the Windows application:
-````text
 cd src
 npm run build
 
