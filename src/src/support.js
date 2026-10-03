@@ -8,6 +8,7 @@ let sessionId = null
 let peerConnection = null
 let dataChannel = null
 let remoteStream = null
+let chatEnabled = false
 
 let lastMouseSendTime = 0
 const MOUSE_SEND_INTERVAL = 33 // ~30 FPS
@@ -85,6 +86,32 @@ document.querySelector('#app').innerHTML = `
         </div>
 
       </section>
+
+      <section class="chat-card" id="chatCard">
+  <div class="chat-header">
+    <strong>Chat con el usuario</strong>
+    <span id="chatStatus">Esperando conexión...</span>
+  </div>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="chat-form">
+    <input
+      id="chatInput"
+      type="text"
+      placeholder="Escribe un mensaje..."
+      autocomplete="off"
+      disabled
+    />
+    <button
+      id="chatSendButton"
+      type="button"
+      disabled
+    >
+      Enviar
+    </button>
+  </div>
+</section>
 
       <section
         id="remoteScreenContainer"
@@ -181,6 +208,86 @@ document.querySelector('#app').innerHTML = `
 
   </div>
 `
+function setChatEnabled(enabled) {
+  chatEnabled = enabled
+
+  const input = document.querySelector('#chatInput')
+  const button = document.querySelector('#chatSendButton')
+  const status = document.querySelector('#chatStatus')
+
+  if (input) input.disabled = !enabled
+  if (button) button.disabled = !enabled
+
+  if (status) {
+    status.textContent = enabled
+      ? 'Conectado'
+      : 'Esperando conexión...'
+  }
+}
+
+function appendChatMessage(text, own = false) {
+  const messages = document.querySelector('#chatMessages')
+
+  if (!messages || !text) return
+
+  const message = document.createElement('div')
+  message.className = `chat-message ${own ? 'own' : 'remote'}`
+
+  message.textContent = text
+
+  messages.appendChild(message)
+  messages.scrollTop = messages.scrollHeight
+}
+
+function sendChatMessage() {
+  if (!chatEnabled) return
+
+  if (
+    !socket ||
+    socket.readyState !== WebSocket.OPEN ||
+    !sessionId
+  ) {
+    return
+  }
+
+  const input = document.querySelector('#chatInput')
+
+  if (!input) return
+
+  const text = input.value.trim()
+
+  if (!text) return
+
+  socket.send(
+    JSON.stringify({
+      type: 'chat_message',
+      session_id: sessionId,
+      data: {
+        text
+      }
+    })
+  )
+
+  appendChatMessage(text, true)
+
+  input.value = ''
+  input.focus()
+}
+
+document.querySelector('#chatSendButton')?.addEventListener(
+  'click',
+  sendChatMessage
+)
+
+document.querySelector('#chatInput')?.addEventListener(
+  'keydown',
+  (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      sendChatMessage()
+    }
+  }
+)
 
 const input = document.querySelector('#sessionInput')
 const connectButton = document.querySelector('#connectButton')
@@ -1206,6 +1313,8 @@ function connectToSession() {
 
         case 'access_granted':
 
+          setChatEnabled(true)
+
           setStatus(
             'Acceso autorizado. Iniciando WebRTC...'
           )
@@ -1238,6 +1347,12 @@ function connectToSession() {
 
           break
 
+        case 'chat_message':
+  if (data.data?.text) {
+    appendChatMessage(data.data.text, false)
+  }
+  break
+
         case 'access_rejected':
 
           setStatus(
@@ -1247,6 +1362,8 @@ function connectToSession() {
           break
 
         case 'session_closed':
+
+          setChatEnabled(false)
 
           setStatus(
             'Sesión cerrada'
