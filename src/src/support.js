@@ -9,6 +9,9 @@ let peerConnection = null
 let dataChannel = null
 let remoteStream = null
 let chatEnabled = false
+let sessionState = 'IDLE'
+let sessionStartedAt = null
+let sessionTimer = null
 
 let lastMouseSendTime = 0
 const MOUSE_SEND_INTERVAL = 33 // ~30 FPS
@@ -44,7 +47,7 @@ document.querySelector('#app').innerHTML = `
 
       <div class="status">
         <span class="status-dot"></span>
-        Técnico
+        Tecnico
       </div>
     </header>
 
@@ -56,14 +59,14 @@ document.querySelector('#app').innerHTML = `
         <h1>Conectar a equipo</h1>
 
         <p class="description">
-          Ingresa el ID de sesión proporcionado por el cliente.
+          Ingresa el ID de sesion proporcionado por el cliente.
         </p>
       </div>
 
       <section class="session-card">
 
         <div class="label">
-          ID DE SESIÓN
+          ID DE SESION
         </div>
 
         <input
@@ -87,10 +90,106 @@ document.querySelector('#app').innerHTML = `
 
       </section>
 
+      <section
+        class="session-console"
+        id="sessionConsole"
+        style="display: none;"
+      >
+        <div class="session-console-header">
+
+          <div>
+            <div class="session-console-label">
+              SESIÓN ACTIVA
+            </div>
+
+            <div
+              class="session-id-display"
+              id="sessionIdDisplay"
+            >
+              —
+            </div>
+          </div>
+
+          <div
+            class="session-state-badge"
+            id="sessionStateBadge"
+          >
+            <span class="session-state-dot"></span>
+            <span id="sessionStateText">
+              CONECTANDO
+            </span>
+          </div>
+
+        </div>
+
+        <div class="session-console-info">
+
+          <div class="session-info-item">
+            <span class="session-info-label">
+              EQUIPO
+            </span>
+
+            <span
+              class="session-info-value"
+              id="sessionComputerName"
+            >
+              Equipo remoto
+            </span>
+          </div>
+
+          <div class="session-info-item session-info-duration">
+            <span class="session-info-label">
+              TIEMPO
+            </span>
+
+            <span
+              class="session-info-value"
+              id="sessionDuration"
+            >
+              00:00
+            </span>
+          </div>
+
+        </div>
+
+        <div class="session-progress">
+
+          <div class="session-step" data-state="CONNECTED">
+            <span class="session-step-dot"></span>
+            <span>CONECTADO</span>
+          </div>
+
+          <div class="session-step" data-state="ACCESS_REQUESTED">
+            <span class="session-step-dot"></span>
+            <span>ACCESO SOLICITADO</span>
+          </div>
+
+          <div class="session-step" data-state="AUTHORIZED">
+            <span class="session-step-dot"></span>
+            <span>AUTORIZADO</span>
+          </div>
+
+          <div class="session-step" data-state="ACTIVE">
+            <span class="session-step-dot"></span>
+            <span>SESIÓN ACTIVA</span>
+          </div>
+
+        </div>
+
+        <button
+          class="session-console-close"
+          id="sessionConsoleClose"
+          type="button"
+        >
+          CERRAR SESIÓN
+        </button>
+
+      </section>
+
       <section class="chat-card" id="chatCard">
   <div class="chat-header">
     <strong>Chat con el usuario</strong>
-    <span id="chatStatus">Esperando conexión...</span>
+    <span id="chatStatus">Esperando conexion...</span>
   </div>
 
   <div class="chat-messages" id="chatMessages"></div>
@@ -164,7 +263,7 @@ document.querySelector('#app').innerHTML = `
             font-weight: 600;
           "
         >
-          CERRAR SESIÓN
+          CERRAR SESION
         </button>
 
         <video
@@ -192,8 +291,8 @@ document.querySelector('#app').innerHTML = `
           <strong>El cliente debe autorizar</strong>
 
           <p>
-            La conexión remota solamente podrá comenzar
-            después de que el cliente acepte la solicitud.
+            La conexion remota solamente podra comenzar
+            despuacs de que el cliente acepte la solicitud.
           </p>
         </div>
       </div>
@@ -202,8 +301,8 @@ document.querySelector('#app').innerHTML = `
 
     <footer>
       Aleux Soporte Remoto
-      <span>•</span>
-      Técnico
+      <span>.</span>
+      Tecnico
     </footer>
 
   </div>
@@ -221,7 +320,7 @@ function setChatEnabled(enabled) {
   if (status) {
     status.textContent = enabled
       ? 'Conectado'
-      : 'Esperando conexión...'
+      : 'Esperando conexion...'
   }
 }
 
@@ -306,8 +405,179 @@ const sessionCard = document.querySelector('.session-card')
 const securityNote = document.querySelector('.security-note')
 const footer = document.querySelector('footer')
 
+const sessionConsole = document.querySelector('#sessionConsole')
+const sessionStateBadge = document.querySelector('#sessionStateBadge')
+const sessionStateText = document.querySelector('#sessionStateText')
+const sessionIdDisplay = document.querySelector('#sessionIdDisplay')
+const sessionDuration = document.querySelector('#sessionDuration')
+const sessionConsoleClose = document.querySelector('#sessionConsoleClose')
+
 let remoteScreenExpanded = false
 
+// =========================================================
+// CONSOLA DE SESIÓN v0.6
+// =========================================================
+
+function updateSessionConsole(state) {
+
+  sessionState = state
+
+  if (sessionConsole) {
+    sessionConsole.style.display = ''
+  }
+
+  if (sessionIdDisplay) {
+    sessionIdDisplay.textContent =
+      sessionId || '—'
+  }
+
+  const labels = {
+    CONNECTED: 'CONECTADO',
+    ACCESS_REQUESTED: 'ACCESO SOLICITADO',
+    AUTHORIZED: 'ACCESO AUTORIZADO',
+    ACTIVE: 'SESIÓN ACTIVA',
+    CLOSED: 'CERRADA',
+    IDLE: 'ESPERANDO'
+  }
+
+  if (sessionStateText) {
+    sessionStateText.textContent =
+      labels[state] || state
+  }
+
+  if (sessionStateBadge) {
+    sessionStateBadge.dataset.state = state
+  }
+
+  document
+    .querySelectorAll('.session-step')
+    .forEach(step => {
+
+      const stepState =
+        step.dataset.state
+
+      step.classList.toggle(
+        'active',
+        stepState === state
+      )
+
+      const stateOrder = [
+        'CONNECTED',
+        'ACCESS_REQUESTED',
+        'AUTHORIZED',
+        'ACTIVE'
+      ]
+
+      const currentIndex =
+        stateOrder.indexOf(state)
+
+      const stepIndex =
+        stateOrder.indexOf(stepState)
+
+      step.classList.toggle(
+        'completed',
+        currentIndex >= 0 &&
+        stepIndex >= 0 &&
+        stepIndex < currentIndex
+      )
+    })
+}
+
+
+function startSessionTimer() {
+
+  if (sessionTimer) {
+    clearInterval(sessionTimer)
+  }
+
+  sessionStartedAt = Date.now()
+
+  const update = () => {
+
+    if (!sessionStartedAt) {
+      return
+    }
+
+    const elapsed =
+      Math.floor(
+        (Date.now() - sessionStartedAt) / 1000
+      )
+
+    const minutes =
+      Math.floor(elapsed / 60)
+        .toString()
+        .padStart(2, '0')
+
+    const seconds =
+      (elapsed % 60)
+        .toString()
+        .padStart(2, '0')
+
+    if (sessionDuration) {
+      sessionDuration.textContent =
+        `${minutes}:${seconds}`
+    }
+  }
+
+  update()
+
+  sessionTimer =
+    setInterval(update, 1000)
+}
+
+
+function stopSessionTimer() {
+
+  if (sessionTimer) {
+    clearInterval(sessionTimer)
+    sessionTimer = null
+  }
+
+  sessionStartedAt = null
+
+  if (sessionDuration) {
+    sessionDuration.textContent = '00:00'
+  }
+}
+
+
+function resetSessionConsole() {
+
+  stopSessionTimer()
+
+  sessionState = 'IDLE'
+
+  if (sessionConsole) {
+    sessionConsole.style.display = 'none'
+  }
+
+  if (sessionIdDisplay) {
+    sessionIdDisplay.textContent = '—'
+  }
+
+  const computerNameElement =
+    document.querySelector('#sessionComputerName')
+
+  if (computerNameElement) {
+    computerNameElement.textContent = 'Equipo remoto'
+  }
+
+  if (sessionStateText) {
+    sessionStateText.textContent = 'ESPERANDO'
+  }
+
+  document
+    .querySelectorAll('.session-step')
+    .forEach(step => {
+      step.classList.remove(
+        'active',
+        'completed'
+      )
+    })
+}
+
+
+// =========================================================
 function showActiveSessionUI() {
   header.style.display = 'none'
   hero.style.display = 'none'
@@ -404,7 +674,7 @@ function setStatus(message) {
 
 function sendSignal(type, data = null) {
   if (!socket || socket.readyState !== WebSocket.OPEN) {
-    console.error('WebSocket no está conectado')
+    console.error('WebSocket no esta¡ conectado')
     return
   }
 
@@ -940,9 +1210,34 @@ function createPeerConnection() {
           'hello_response'
         ) {
           setStatus(
-            'WebRTC PASS: conexión P2P activa'
+            'WebRTC PASS: conexion P2P activa'
           )
 
+        }
+
+        if (
+          data.type ===
+          'client_info'
+        ) {
+          const computerName =
+            data.computer_name ||
+            data.data?.computer_name ||
+            'Equipo remoto'
+
+          const computerNameElement =
+            document.querySelector(
+              '#sessionComputerName'
+            )
+
+          if (computerNameElement) {
+            computerNameElement.textContent =
+              computerName
+          }
+
+          console.log(
+            'Nombre del equipo remoto:',
+            computerName
+          )
         }
       } catch {
       }
@@ -1032,8 +1327,10 @@ function createPeerConnection() {
         peerConnection.connectionState ===
         'connected'
       ) {
+        updateSessionConsole('ACTIVE')
+
         setStatus(
-          'Conexión WebRTC establecida'
+          'Conexion WebRTC establecida'
         )
       }
 
@@ -1042,7 +1339,7 @@ function createPeerConnection() {
         'failed'
       ) {
         setStatus(
-          'Conexión WebRTC falló'
+          'Conexion WebRTC fallo'
         )
       }
 
@@ -1099,7 +1396,7 @@ async function createOffer() {
     )
 
     setStatus(
-      'Error creando conexión WebRTC'
+      'Error creando conexion WebRTC'
     )
   }
 }
@@ -1198,7 +1495,7 @@ async function handleWebRTCOffer(data) {
     )
 
     setStatus(
-      'Error procesando transmisión de pantalla'
+      'Error procesando transmision de pantalla'
     )
   }
 }
@@ -1247,7 +1544,7 @@ function connectToSession() {
 
   if (cleanId.length !== 9) {
     setStatus(
-      'Ingresa un ID de 9 dígitos'
+      'Ingresa un ID de 9 da­gitos'
     )
 
     return
@@ -1266,7 +1563,7 @@ function connectToSession() {
     'open',
     () => {
       console.log(
-        'Técnico conectado al servidor'
+        'Tecnico conectado al servidor'
       )
 
       socket.send(
@@ -1289,7 +1586,7 @@ function connectToSession() {
           JSON.parse(event.data)
       } catch {
         console.error(
-          'Respuesta inválida'
+          'Respuesta invalida'
         )
 
         return
@@ -1298,9 +1595,14 @@ function connectToSession() {
       switch (data.type) {
         case 'session_joined':
 
+          updateSessionConsole('CONNECTED')
+          startSessionTimer()
+
           setStatus(
-            'Solicitando autorización del cliente...'
+            'Solicitando autorizacion del cliente...'
           )
+
+          updateSessionConsole('ACCESS_REQUESTED')
 
           socket.send(
             JSON.stringify({
@@ -1313,6 +1615,7 @@ function connectToSession() {
 
         case 'access_granted':
 
+          updateSessionConsole('AUTHORIZED')
           setChatEnabled(true)
 
           setStatus(
@@ -1356,17 +1659,18 @@ function connectToSession() {
         case 'access_rejected':
 
           setStatus(
-            'El cliente rechazó la solicitud'
+            'El cliente rechazo la solicitud'
           )
 
           break
 
         case 'session_closed':
 
+          resetSessionConsole()
           setChatEnabled(false)
 
           setStatus(
-            'Sesión cerrada'
+            'Sesion cerrada'
           )
 
           if (dataChannel) {
@@ -1423,7 +1727,7 @@ function connectToSession() {
     'close',
     () => {
       setStatus(
-        'Conexión con el servidor cerrada'
+        'Conexion con el servidor cerrada'
       )
     }
   )
@@ -1437,11 +1741,39 @@ function connectToSession() {
       )
 
       setStatus(
-        'Error de conexión'
+        'Error de conexion'
       )
     }
   )
 }
+
+function closeCurrentSession() {
+  if (
+    socket &&
+    socket.readyState === WebSocket.OPEN &&
+    sessionId
+  ) {
+    socket.send(
+      JSON.stringify({
+        type: 'close_session',
+        session_id: sessionId
+      })
+    )
+
+    console.log(
+      'Solicitud de cierre de sesion enviada'
+    )
+  } else {
+    console.warn(
+      'No hay una sesion activa para cerrar'
+    )
+  }
+}
+
+sessionConsoleClose?.addEventListener(
+  'click',
+  closeCurrentSession
+)
 
 /*
  * =========================================================
@@ -1465,26 +1797,5 @@ input.addEventListener(
 
 closeRemoteSession.addEventListener(
   'click',
-  () => {
-    if (
-      socket &&
-      socket.readyState === WebSocket.OPEN &&
-      sessionId
-    ) {
-      socket.send(
-        JSON.stringify({
-          type: 'close_session',
-          session_id: sessionId
-        })
-      )
-
-      console.log(
-        'Solicitud de cierre de sesión enviada'
-      )
-    } else {
-      console.warn(
-        'No hay una sesión activa para cerrar'
-      )
-    }
-  }
+  closeCurrentSession
 )

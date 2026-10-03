@@ -563,11 +563,32 @@ function createPeerConnection() {
 
       dataChannel.addEventListener(
         'open',
-        () => {
+        async () => {
 
           console.log(
             'DataChannel abierto'
           )
+
+          try {
+            const computerName = await invoke('get_computer_name')
+
+            dataChannel.send(
+              JSON.stringify({
+                type: 'client_info',
+                computer_name: computerName
+              })
+            )
+
+            console.log(
+              'Nombre de equipo enviado:',
+              computerName
+            )
+          } catch (error) {
+            console.error(
+              'No fue posible obtener el nombre del equipo:',
+              error
+            )
+          }
 
           setWaiting(
             'Canal WebRTC conectado'

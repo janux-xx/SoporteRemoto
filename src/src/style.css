@@ -479,3 +479,365 @@ footer span {
   opacity: 0.4;
   cursor: not-allowed;
 }
+/* ============================================================
+   SESSION CONSOLE — ALEUX REMOTE v0.6
+   ============================================================ */
+
+.session-console {
+  width: 100%;
+  max-width: 720px;
+  margin: 20px auto 0;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e2e7ef;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* HEADER DE CONSOLA */
+
+.session-console-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.session-console-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.session-console-title strong {
+  color: #111827;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.session-console-title span {
+  color: #8a94a6;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ID DE SESIÓN */
+
+.session-id-display {
+  margin-top: 4px;
+  color: #172033;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+/* BADGE DE ESTADO */
+
+.session-state-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.session-state-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: #9ca3af;
+}
+
+/* ESTADOS */
+
+.session-state-badge.connected {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.session-state-badge.connected .session-state-dot {
+  background: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.session-state-badge.access-requested {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.session-state-badge.access-requested .session-state-dot {
+  background: #f97316;
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12);
+}
+
+.session-state-badge.authorized {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.session-state-badge.authorized .session-state-dot {
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+.session-state-badge.active {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.session-state-badge.active .session-state-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.16);
+  animation: session-active-pulse 1.8s infinite;
+}
+
+@keyframes session-active-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.25);
+  }
+
+  70% {
+    box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* INFORMACIÓN */
+
+.session-console-info {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 16px 0;
+}
+
+.session-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-info-label {
+  color: #9ca3af;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.session-info-value {
+  color: #172033;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* PROGRESO */
+
+/* ============================================================
+   SESSION PROGRESS
+   ============================================================ */
+
+.session-progress {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 8px;
+  padding: 0 8px;
+}
+
+/* Línea central */
+.session-progress::before {
+  content: "";
+  position: absolute;
+  top: 37px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.session-step {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1;
+}
+
+/* Eliminamos las líneas individuales */
+.session-step::before {
+  display: none;
+}
+
+/* Texto del estado */
+.session-step span {
+  display: block;
+  min-height: 18px;
+  color: #9ca3af;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 18px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Círculo */
+.session-step::after {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin-top: 5px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #d1d5db;
+  box-shadow: 0 0 0 1px #d1d5db;
+  z-index: 2;
+}
+
+/* ACTIVO */
+.session-step.active::after {
+  background: #172033;
+  box-shadow: 0 0 0 1px #172033;
+}
+
+.session-step.active span {
+  color: #172033;
+}
+
+/* COMPLETADO */
+.session-step.completed::after {
+  background: #22c55e;
+  box-shadow: 0 0 0 1px #22c55e;
+}
+
+.session-step.completed span {
+  color: #15803d;
+}
+
+.session-step:first-child::before {
+  left: 50%;
+}
+
+.session-step:last-child::before {
+  right: 50%;
+}
+
+.session-step::after {
+  content: "";
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0 auto 7px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #d1d5db;
+  box-shadow: 0 0 0 1px #d1d5db;
+}
+
+.session-step span {
+  display: block;
+  color: #9ca3af;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+}
+
+/* PASO ACTIVO / COMPLETADO */
+
+.session-step.active::after {
+  background: #172033;
+  box-shadow: 0 0 0 1px #172033;
+}
+
+.session-step.active span {
+  color: #172033;
+}
+
+.session-step.completed::after {
+  background: #22c55e;
+  box-shadow: 0 0 0 1px #22c55e;
+}
+
+.session-step.completed span {
+  color: #15803d;
+}
+
+.session-step.completed::before {
+  background: #22c55e;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 520px) {
+  .session-console {
+    padding: 16px;
+  }
+
+  .session-console-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .session-state-badge {
+    align-self: flex-start;
+  }
+
+  .session-console-info {
+    gap: 20px;
+  }
+
+  .session-step span {
+  display: block;
+  color: #9ca3af;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+
+  .session-step::before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.session-step::after {
+  content: "";
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 7px auto 0;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #d1d5db;
+  box-shadow: 0 0 0 1px #d1d5db;
+}
+
+}

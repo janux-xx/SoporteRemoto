@@ -2,6 +2,7 @@
 pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            get_computer_name,
             move_mouse,
             mouse_down,
             mouse_up,
@@ -22,6 +23,20 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("error while building tauri application");
+}
+
+#[tauri::command]
+fn get_computer_name() -> Result<String, String> {
+    #[cfg(windows)]
+    {
+        std::env::var("COMPUTERNAME")
+            .map_err(|_| "No fue posible obtener el nombre del equipo.".to_string())
+    }
+
+    #[cfg(not(windows))]
+    {
+        Err("El nombre del equipo solo está implementado para Windows.".to_string())
+    }
 }
 
 #[tauri::command]
