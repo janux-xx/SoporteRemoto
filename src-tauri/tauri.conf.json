@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Aleux Soporte Remoto - Cliente",
-  "version": "0.6.0",
-  "identifier": "mx.SOME.aleux.remote",
+  "version": "0.6.6",
+  "identifier": "mx.some.aleux.remote",
   "build": {
     "frontendDist": "../src/dist",
     "devUrl": "http://localhost:1420",
@@ -14,9 +14,10 @@
       {
         "title": "Aleux Soporte Remoto - Cliente",
         "width": 800,
-        "height": 600,
+        "height": 640,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "center": true
       }
     ],
     "security": {

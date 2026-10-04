@@ -352,9 +352,11 @@ footer span {
 
 /* Área de conversación */
 .chat-messages {
-  height: 220px;
+  height: 330px;
+  max-height: 330px;
   overflow-y: auto;
-  padding: 16px;
+  overflow-x: hidden;
+  padding: 10px;
   background: #f8fafc;
   scroll-behavior: smooth;
 }
@@ -840,4 +842,452 @@ footer span {
   box-shadow: 0 0 0 1px #d1d5db;
 }
 
+}
+
+/* ============================================================
+   ALEUX REMOTE — 800x600 COMPACT LAYOUT
+   Session = 30% | Chat = 70%
+   Chat con scroll interno
+   ============================================================ */
+
+html,
+body {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.main {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 20px 18px 16px;
+  display: grid;
+  grid-template-columns: 3fr 7fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.hero {
+  grid-column: 1 / -1;
+}
+
+.shield {
+  display: none;
+}
+
+h1 {
+  font-size: 26px;
+}
+
+.description {
+  margin: 6px auto 14px;
+  font-size: 13px;
+}
+
+.session-card,
+.chat-card {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.session-card {
+  padding: 18px;
+  min-width: 0;
+}
+
+.session-id {
+  margin: 10px 0 12px;
+  gap: 7px;
+  font-size: 25px;
+  letter-spacing: 2px;
+}
+
+.session-id span {
+  min-width: 0;
+  flex: 1;
+  padding: 7px 5px;
+}
+
+.waiting {
+  font-size: 12px;
+}
+
+.cancel-button {
+  margin-top: 16px;
+  padding: 9px 18px;
+}
+
+.chat-card {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.chat-header {
+  padding: 12px 14px;
+}
+
+.chat-header strong {
+  font-size: 14px;
+}
+
+.chat-header span {
+  font-size: 11px;
+}
+
+.chat-messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+}
+
+.chat-form {
+  padding: 9px;
+  gap: 8px;
+}
+
+.chat-form input,
+.chat-form button {
+  height: 38px;
+}
+
+.chat-form button {
+  padding: 0 14px;
+}
+
+.security-note {
+  grid-column: 1 / -1;
+  margin-top: 0;
+  padding: 12px 14px;
+}
+
+footer {
+  padding: 10px;
+}
+
+.header {
+  height: 58px;
+  padding: 0 18px;
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  font-size: 17px;
+}
+
+.brand-name {
+  font-size: 13px;
+}
+
+.brand-subtitle {
+  font-size: 9px;
+}
+
+@media (max-width: 650px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .hero,
+  .security-note {
+    grid-column: 1;
+  }
+
+  .chat-card {
+    min-height: 220px;
+  }
+}
+
+
+/* ============================================================
+   ALEUX REMOTE — FINAL CHAT HEIGHT FIX
+   800x600 / Session 30% / Chat 70%
+   ============================================================ */
+
+.main {
+  grid-template-columns: 3fr 7fr !important;
+  align-items: start !important;
+  grid-auto-rows: auto !important;
+}
+
+/* Both cards have a real fixed height. They must not stretch with content. */
+.main > .session-card,
+.main > .chat-card,
+.session-console,
+.chat-card {
+  height: 380px !important;
+  min-height: 380px !important;
+  max-height: 380px !important;
+  box-sizing: border-box !important;
+  align-self: start !important;
+}
+
+/* Chat is a fixed box. Nothing inside can enlarge the page. */
+.chat-card {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-width: 0 !important;
+}
+
+/* Only this area scrolls. */
+.chat-messages {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain;
+}
+
+/* Input stays at the bottom of the fixed chat card. */
+.chat-form {
+  flex: 0 0 auto !important;
+}
+
+/* Prevent long session content from expanding its grid row. */
+.session-console {
+  overflow: hidden !important;
+}
+
+.remote-screen {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+}
+
+
+
+/* ============================================================
+   ALEUX REMOTE — SUPPORT LAYOUT FIX vFINAL
+   Session 30% | Chat 70% | Remote screen 100% below
+   ============================================================ */
+
+.main {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 20px 18px 16px !important;
+  display: grid !important;
+  grid-template-columns: 3fr 7fr !important;
+  grid-template-rows: auto 380px auto auto !important;
+  gap: 12px !important;
+  align-items: start !important;
+}
+
+/* Header/hero */
+.main > .hero {
+  grid-column: 1 / -1 !important;
+  grid-row: 1 !important;
+}
+
+/* Active session console: left 30% */
+.main > #sessionConsole {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  height: 380px !important;
+  min-height: 380px !important;
+  max-height: 380px !important;
+  margin: 0 !important;
+  padding: 18px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  align-self: start !important;
+}
+
+/* Chat: right 70% */
+.main > #chatCard {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  height: 380px !important;
+  min-height: 380px !important;
+  max-height: 380px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  align-self: start !important;
+}
+
+/* Internal chat scroll only */
+.main > #chatCard .chat-messages {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Input stays at bottom */
+.main > #chatCard .chat-form {
+  flex: 0 0 auto !important;
+}
+
+/* IMPORTANT: actual remote container is an ID, not .remote-screen */
+.main > #remoteScreenContainer {
+  grid-column: 1 / -1 !important;
+  grid-row: 3 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  align-self: start !important;
+}
+
+/* Do not let inline margin from support.js push the remote screen */
+#remoteScreenContainer {
+  margin-top: 0 !important;
+}
+
+/* Security note */
+.main > .security-note {
+  grid-column: 1 / -1 !important;
+  grid-row: 4 !important;
+}
+
+/* ============================================================
+   SESSION PROGRESS — REAL DOM HAS .session-step-dot
+   ============================================================ */
+
+.main > #sessionConsole .session-progress {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin-top: 8px !important;
+  align-items: flex-start !important;
+  justify-content: stretch !important;
+}
+
+/* Connecting line */
+.main > #sessionConsole .session-progress::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 40px !important;
+  left: 12.5% !important;
+  right: 12.5% !important;
+  height: 2px !important;
+  background: #e5e7eb !important;
+  z-index: 0 !important;
+}
+
+/* Four equal steps */
+.main > #sessionConsole .session-step {
+  position: relative !important;
+  flex: 1 1 25% !important;
+  width: 25% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: center !important;
+  z-index: 1 !important;
+}
+
+/* Real dot from support.js */
+.main > #sessionConsole .session-step-dot {
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  margin: 5px auto 0 !important;
+  border: 3px solid #ffffff !important;
+  border-radius: 50% !important;
+  background: #d1d5db !important;
+  box-shadow: 0 0 0 1px #d1d5db !important;
+  z-index: 2 !important;
+}
+
+/* Remove old pseudo-element circles */
+.main > #sessionConsole .session-step::after {
+  display: none !important;
+}
+
+/* Remove old individual pseudo lines */
+.main > #sessionConsole .session-step::before {
+  display: none !important;
+}
+
+/* Labels */
+.main > #sessionConsole .session-step > span:not(.session-step-dot) {
+  order: -1 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 28px !important;
+  padding: 0 2px !important;
+  color: #9ca3af !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  line-height: 10px !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+}
+
+/* Completed */
+.main > #sessionConsole .session-step.completed .session-step-dot {
+  background: #22c55e !important;
+  box-shadow: 0 0 0 1px #22c55e !important;
+}
+
+.main > #sessionConsole .session-step.completed > span:not(.session-step-dot) {
+  color: #15803d !important;
+}
+
+/* Active */
+.main > #sessionConsole .session-step.active .session-step-dot {
+  background: #172033 !important;
+  box-shadow: 0 0 0 1px #172033 !important;
+}
+
+.main > #sessionConsole .session-step.active > span:not(.session-step-dot) {
+  color: #172033 !important;
+}
+
+/* Mobile */
+@media (max-width: 650px) {
+  .main {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+  }
+
+  .main > .hero,
+  .main > #sessionConsole,
+  .main > #chatCard,
+  .main > #remoteScreenContainer,
+  .main > .security-note {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+
+  .main > #sessionConsole,
+  .main > #chatCard {
+    height: 380px !important;
+    min-height: 380px !important;
+    max-height: 380px !important;
+  }
 }

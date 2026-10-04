@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Aleux Soporte Remoto - Técnico",
-  "version": "0.6.0",
-  "identifier": "mx.SOME.aleux.remote.support",
+  "version": "0.6.6",
+  "identifier": "mx.some.aleux.remote.support",
   "build": {
     "frontendDist": "../src/dist",
     "devUrl": "http://localhost:1420",

@@ -1775,6 +1775,23 @@ sessionConsoleClose?.addEventListener(
   closeCurrentSession
 )
 
+// Captura global de cierre para asegurar que el click llegue
+// incluso cuando la pantalla remota tiene el foco.
+document.addEventListener(
+  'click',
+  (event) => {
+    const target = event.target
+
+    if (
+      target?.id === 'sessionConsoleClose' ||
+      target?.id === 'closeRemoteSession'
+    ) {
+      closeCurrentSession()
+    }
+  },
+  true
+)
+
 /*
  * =========================================================
  * UI
