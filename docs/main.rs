@@ -810,5 +810,3 @@ fn send_error(
         .into(),
     ));
 }
-
-[root@virt07 src]#
